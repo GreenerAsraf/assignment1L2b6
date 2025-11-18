@@ -12,9 +12,6 @@ function formatValue(
     throw new Error('Unsupported type')
   }
 }
-// console.log(formatValue(3.14159)) // "3.14"
-// console.log(formatValue('hello')) // "HELLO"
-// console.log(formatValue(true)) // false
 
 // problem 2
 function getLength(value: string | any[]): number {
@@ -23,28 +20,11 @@ function getLength(value: string | any[]): number {
   } else if (Array.isArray(value)) {
     return value.length
   } else {
-    throw new Error('Unsupported type')
+    throw new Error('type is not ')
   }
 }
-// console.log(getLength('TypeSc ript'), [7, 8, 9]) // 10
-// console.log(getLength([1, 2, 3, 4, 5])) // 5
-// console.log(getLength([true, true, true, true, true, false])) // 5
 
-// Problem 3:
-// Create a Person class with name and age properties. Add a method getDetails that returns a string with the person's name and age.
-
-// Requirements:
-// You must use a constructor to initialize the properties.
-// The getDetails method should return a string in the format: "Name: [name], Age: [age]".
-// Sample Input:
-// const person1 = new Person('John Doe', 30);
-// console.log(person1.getDetails());
-
-// const person2 = new Person('Alice', 25);
-// console.log(person2.getDetails());
-// Sample Output:
-// 'Name: John Doe, Age: 30';
-// 'Name: Alice, Age: 25';
+// problem 3:
 
 class Person {
   name: string
@@ -54,17 +34,9 @@ class Person {
     this.age = age
   }
   getDetails(name: string = this.name): string {
-    // return `Name: ${this.name}, Age: ${this.age}'`
-    return ` 'Name : [${this.name}],Age:[${this.age}]'`
+    return `'Name: ${this.name}, Age: ${this.age}'`
   }
 }
-const boy1 = new Person('tahmid', 9)
-const boy2 = new Person('SHihab', 28)
-const boy3 = new Person('Alice', 25)
-console.log(boy1.getDetails()) // Name: tahmid, Age: 9
-console.log(boy1)
-console.log(boy2.getDetails()) // Name: SHihab, Age: 28
-console.log(boy3.getDetails()) // Name: Alice, Age: 25
 
 // Problem 4:
 function filterByRating(
@@ -80,16 +52,104 @@ const books = [
   { title: 'Book C', rating: 4.0 },
   { title: 'Book C', rating: 0.4 }
 ]
-const highRatedBooks = filterByRating(books, 4.0)
-console.log(highRatedBooks)
 
 // problem 5:
-// function filterActiveUsers():{ name: string; isActive: boolean }[] {
-//   const users[] = [
-//     // {id: 1, name: 'Alice',emqil: "asraf@gmail.com", isActive: true },
-//     // {id: 2, name: 'Bob', email: "bob@gmail.com", isActive: false },
-//     // {id: 3, name: 'Charlie',email: "charlie@gmail.com", isActive: true },
-//     // {id: 4, name: 'David',  email: "david@gmail.com", isActive: false }
-//   ]
-//   return users.filter((user) => user.isActive)
-// }
+
+type User = {
+  id: number
+  name: string
+  email: string
+  isActive: boolean
+}
+function filterActiveUsers(users: User[]): User[] {
+  if (!Array.isArray(users)) {
+    throw new Error('Input must be an array of users')
+  }
+  return users.filter(
+    (user): user is User =>
+      typeof user.id === 'number' &&
+      typeof user.name === 'string' &&
+      typeof user.email === 'string' &&
+      typeof user.isActive === 'boolean' &&
+      user.isActive
+  )
+}
+
+interface Book {
+  title: string
+  author: string
+  publishedYear: number
+  isAvailable: boolean
+}
+
+function printBookDetails(book: Book): void {
+  const availability = book.isAvailable ? 'Yes' : 'No'
+  console.log(
+    `Title: ${book.title}, Author: ${book.author}, Published: ${book.publishedYear}, Available: ${availability}`
+  )
+}
+
+// problem 7:
+// Function to get unique values from two arrays of strings or numbers
+function getUniqueValues<T extends string | number>(
+  array1: T[],
+  array2: T[]
+): T[] {
+  const result: T[] = []
+
+  // Helper to check if a value already exists in result
+  function exists(value: T): boolean {
+    for (let i = 0; i < result.length; i++) {
+      if (result[i] === value) {
+        return true
+      }
+    }
+    return false
+  }
+
+  for (let i = 0; i < array1.length; i++) {
+    if (!exists(array1[i])) {
+      result.push(array1[i])
+    }
+  }
+
+  for (let i = 0; i < array2.length; i++) {
+    if (!exists(array2[i])) {
+      result.push(array2[i])
+    }
+  }
+
+  return result
+}
+
+// problem 8:
+
+type Product = {
+  name: string
+  price: number
+  quantity: number
+  discount?: number // optional percentage (0–100)
+}
+function calculateTotalPrice(products: Product[]): number {
+  if (!Array.isArray(products) || products.length === 0) {
+    return 0
+  }
+
+  return products
+    .map((product) => {
+      // price = price * quantity
+      let total = product.price * product.quantity
+
+      //  discount if it exists
+      if (
+        typeof product.discount === 'number' &&
+        product.discount >= 0 &&
+        product.discount <= 100
+      ) {
+        total = total * (1 - product.discount / 100)
+      }
+
+      return total
+    })
+    .reduce((sum, current) => sum + current, 0)
+}
